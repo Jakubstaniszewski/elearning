@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { LabelInputContainer } from '../UI/LabelInputContainer';
 import { Label } from '../UI/Label';
 import { Input } from '../UI/Input';
@@ -8,6 +9,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [haslo, setHaslo] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate(); // ← dodane
 
   const validateEmail = (email: string) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -31,15 +33,19 @@ const LoginForm = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, haslo }),
-        credentials: 'include', // jeśli używasz cookies
+        credentials: 'include',
       });
 
       if (response.ok) {
         const result = await response.json();
         setMessage('Zalogowano pomyślnie.');
-        // np. zapisz token/sesję, przekieruj:
-        // localStorage.setItem("token", result.token);
-        // router.push("/dashboard");
+
+        localStorage.setItem('user', JSON.stringify(result.user));
+        
+        // ⏩ Przekierowanie do /dashboard
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 1000);
       } else {
         const error = await response.text();
         setMessage(`Błąd: ${error}`);

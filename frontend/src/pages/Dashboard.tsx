@@ -1,42 +1,37 @@
-const Dashboard = () => {
+import React, { useState } from "react";
+import { Sidebar } from "../components/UI/Sidebar";
+import { SidebarMenu } from "../components/UI/SidebarMenu";
+import { cn } from "../utils/cn";
+import { useLocation } from "react-router-dom";
+
+export function DashboardPage() {
+  const [open, setOpen] = useState(true);
+  const location = useLocation();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f1c2e] to-[#000000] text-white p-6">
-      <header className="flex justify-between items-center mb-10">
-        <h1 className="text-3xl font-bold">Welcome, User!</h1>
-        <button className="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 rounded-md font-semibold">
-          Logout
-        </button>
-      </header>
+    <div
+      className={cn(
+        "mx-auto flex w-full max-w-7xl flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
+        "h-screen"
+      )}
+    >
+      <Sidebar open={open} setOpen={setOpen}>
+        <SidebarMenu open={open} />
+      </Sidebar>
 
-      <section className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div className="bg-[#101827] p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Your Progress</h2>
-          <p className="text-gray-400">Complete your next lessons to level up.</p>
-          <div className="mt-4 w-full bg-gray-700 rounded-full h-3">
-            <div className="bg-cyan-400 h-3 rounded-full w-3/4"></div>
-          </div>
-        </div>
+      <div className="flex-1 p-6 overflow-y-auto">
+        <h1 className="text-2xl font-bold text-neutral-800 dark:text-white mb-4">
+          {location.pathname === "/dashboard" && "Panel główny"}
+          {location.pathname === "/users" && "Lista użytkowników"}
+          {location.pathname === "/settings" && "Ustawienia konta"}
+        </h1>
 
-        <div className="bg-[#101827] p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Upcoming Tests</h2>
-          <ul className="text-gray-300 list-disc list-inside">
-            <li>Math - June 10</li>
-            <li>English - June 12</li>
-            <li>Science - June 15</li>
-          </ul>
-        </div>
-
-        <div className="bg-[#101827] p-6 rounded-xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-2">Quick Links</h2>
-          <div className="flex flex-col space-y-2">
-            <a href="#" className="text-cyan-400 hover:underline">Your Tasks</a>
-            <a href="#" className="text-cyan-400 hover:underline">Resources</a>
-            <a href="#" className="text-cyan-400 hover:underline">Support</a>
-          </div>
-        </div>
-      </section>
+        <p className="text-neutral-600 dark:text-neutral-300">
+          {location.pathname === "/dashboard" && "Witamy w panelu administratora."}
+          {location.pathname === "/users" && "Tutaj pojawią się dane użytkowników."}
+          {location.pathname === "/settings" && "Tu skonfigurujesz swój profil."}
+        </p>
+      </div>
     </div>
   );
-};
-
-export default Dashboard;
+}
