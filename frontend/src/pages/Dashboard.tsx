@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getUserRole } from "../utils/auth";
 import { Sidebar } from "../components/UI/Sidebar";
-import { TeacherSidebar } from "../components/UI/TeacherSidebar";
-import { StudentSidebar } from "../components/UI/StudentSidebar";
+import { TeacherDashboard } from "../components/UI/TeacherSidebar";
+import { StudentDashboard } from "../components/UI/StudentSidebar";
+
+
 
 const Dashboard = () => {
   const [role, setRole] = useState<"teacher" | "student">("student");
@@ -16,9 +18,9 @@ const Dashboard = () => {
     <div className="w-screen h-screen flex">
       <Sidebar open={true} setOpen={() => {}}>
         {role === "teacher" ? (
-          <TeacherSidebar open={true} />
+          <TeacherDashboard  />
         ) : (
-          <StudentSidebar open={true} />
+          <StudentDashboard />
         )}
       </Sidebar>
 

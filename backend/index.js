@@ -20,6 +20,7 @@ const pool = new Pool({
   },
 });
 
+// 🚀 LOGIN
 app.post("/login", async (req, res) => {
   const { email, haslo } = req.body;
 
@@ -40,8 +41,7 @@ app.post("/login", async (req, res) => {
       return res.status(400).send("Nieprawidłowy email lub hasło.");
     }
 
-    // Możesz dodać token JWT tutaj w przyszłości
-
+    // ✅ Zwracamy role
     res.status(200).json({
       message: "Zalogowano pomyślnie",
       user: {
@@ -49,6 +49,7 @@ app.post("/login", async (req, res) => {
         imie: user.imie,
         nazwisko: user.nazwisko,
         email: user.email,
+        rola: user.rola, // 🟢 TUTAJ
       },
     });
   } catch (err) {
@@ -57,11 +58,13 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// TEST
 app.get("/", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.send(`Backend działa! ${result.rows[0].now}`);
 });
 
+// 🔨 INICJALIZACJA
 app.get("/init-users-table", async (req, res) => {
   const query = `
     CREATE TABLE IF NOT EXISTS users (
@@ -69,13 +72,15 @@ app.get("/init-users-table", async (req, res) => {
       imie VARCHAR(100),
       nazwisko VARCHAR(100),
       email VARCHAR(150) UNIQUE NOT NULL,
-      haslo TEXT NOT NULL
+      haslo TEXT NOT NULL,
+      rola VARCHAR(20) DEFAULT 'student' -- 🆕 kolumna roli
     );
   `;
   await pool.query(query);
-  res.send("Tabela 'users' została utworzona.");
+  res.send("Tabela 'users' została utworzona (lub już istnieje).");
 });
 
+// 🧾 REJESTRACJA
 app.post("/users", async (req, res) => {
   const { imie, nazwisko, email, haslo } = req.body;
 
@@ -91,10 +96,13 @@ app.post("/users", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(haslo, 10);
 
+    // 🧠 Rola zdefiniowana na podstawie emaila
+    const rola = email === "Staniszewski.jakub03@gmail.com" ? "teacher" : "student";
+
     const result = await pool.query(
-      `INSERT INTO users (imie, nazwisko, email, haslo)
-       VALUES ($1, $2, $3, $4) RETURNING id, imie, nazwisko, email`,
-      [imie, nazwisko, email, hashedPassword]
+      `INSERT INTO users (imie, nazwisko, email, haslo, rola)
+       VALUES ($1, $2, $3, $4, $5) RETURNING id, imie, nazwisko, email, rola`,
+      [imie, nazwisko, email, hashedPassword, rola]
     );
 
     res.status(201).json(result.rows[0]);
@@ -104,12 +112,11 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// 🚪 LOGOUT (na przyszłość z JWT)
 app.post("/logout", (req, res) => {
-
   res.clearCookie("token"); 
   res.status(200).send("Wylogowano");
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
