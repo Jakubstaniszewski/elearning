@@ -1,44 +1,75 @@
 import { SidebarBody, SidebarLink } from "./Sidebar";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Logo } from "./Logo";
+import { LogoIcon } from "./LogoIcon";
 import {
   IconArrowLeft,
   IconBrandTabler,
   IconSettings,
   IconUserBolt,
 } from "@tabler/icons-react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { Logo } from "./Logo";
-import { LogoIcon } from "./LogoIcon";
 
-export const SidebarMenu = ({ open }: { open: boolean }) => {
+type Props = {
+  open: boolean;
+  role: "teacher" | "student";
+};
+
+export const SidebarMenu = ({ open, role }: Props) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const links = [
+  const teacherLinks = [
     {
       label: "Dashboard",
       href: "/dashboard",
-      icon: <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconBrandTabler className="h-5 w-5 shrink-0" />,
     },
     {
       label: "Użytkownicy",
       href: "/users",
-      icon: <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconUserBolt className="h-5 w-5 shrink-0" />,
     },
     {
       label: "Ustawienia",
       href: "/settings",
-      icon: <IconSettings className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconSettings className="h-5 w-5 shrink-0" />,
+    },
+    {
+        label: "Wyloguj się",
+        href: "", // usuń #
+        icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-red-500" />,
+        onClick: (e?: React.MouseEvent) => {
+            e?.preventDefault(); // zabezpieczenie
+            localStorage.removeItem("user");
+            navigate("/");
+        },
+    }
+
+  ];
+
+  const studentLinks = [
+    {
+      label: "Moje lekcje",
+      href: "/dashboard",
+      icon: <IconBrandTabler className="h-5 w-5 shrink-0" />,
+    },
+    {
+      label: "Ustawienia",
+      href: "/settings",
+      icon: <IconSettings className="h-5 w-5 shrink-0" />,
     },
     {
       label: "Wyloguj się",
       href: "#",
-      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />,
+      icon: <IconArrowLeft className="h-5 w-5 shrink-0 text-red-500" />,
       onClick: () => {
         localStorage.removeItem("user");
         navigate("/");
       },
     },
   ];
+
+  const links = role === "teacher" ? teacherLinks : studentLinks;
 
   return (
     <SidebarBody className="justify-between gap-10">
@@ -56,21 +87,6 @@ export const SidebarMenu = ({ open }: { open: boolean }) => {
             />
           ))}
         </div>
-      </div>
-      <div>
-        <SidebarLink
-          link={{
-            label: "Twój profil",
-            href: "#",
-            icon: (
-              <img
-                src="https://assets.aceternity.com/manu.png"
-                className="h-7 w-7 shrink-0 rounded-full"
-                alt="Avatar"
-              />
-            ),
-          }}
-        />
       </div>
     </SidebarBody>
   );

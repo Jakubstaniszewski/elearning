@@ -104,6 +104,13 @@ app.post("/users", async (req, res) => {
   }
 });
 
+app.post("/logout", (req, res) => {
+
+  res.clearCookie("token"); 
+  res.status(200).send("Wylogowano");
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -1,37 +1,35 @@
 import React, { useState } from "react";
 import { Sidebar } from "../components/UI/Sidebar";
-import { SidebarMenu } from "../components/UI/SidebarMenu";
+import { TeacherSidebar } from "../components/UI/TeacherSidebar";
+import { StudentSidebar } from "../components/UI/StudentSidebar";
 import { cn } from "../utils/cn";
 import { useLocation } from "react-router-dom";
 
-export function DashboardPage() {
+const Dashboard = () => {
   const [open, setOpen] = useState(true);
   const location = useLocation();
 
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const isTeacher = user.email === "Staniszewski.jakub03@gmail.com";
+
   return (
-    <div
-      className={cn(
-        "mx-auto flex w-full max-w-7xl flex-1 flex-col overflow-hidden rounded-md border border-neutral-200 bg-gray-100 md:flex-row dark:border-neutral-700 dark:bg-neutral-800",
-        "h-screen"
-      )}
-    >
+    <div className={cn("w-screen h-screen flex")}>
       <Sidebar open={open} setOpen={setOpen}>
-        <SidebarMenu open={open} />
+        {isTeacher ? <TeacherSidebar open={open} /> : <StudentSidebar open={open} />}
       </Sidebar>
 
-      <div className="flex-1 p-6 overflow-y-auto">
+      <main className="flex-1 p-6 overflow-y-auto">
         <h1 className="text-2xl font-bold text-neutral-800 dark:text-white mb-4">
-          {location.pathname === "/dashboard" && "Panel główny"}
-          {location.pathname === "/users" && "Lista użytkowników"}
-          {location.pathname === "/settings" && "Ustawienia konta"}
+          {isTeacher ? "Witaj, nauczycielu" : "Witaj, uczniu"}
         </h1>
-
         <p className="text-neutral-600 dark:text-neutral-300">
-          {location.pathname === "/dashboard" && "Witamy w panelu administratora."}
-          {location.pathname === "/users" && "Tutaj pojawią się dane użytkowników."}
-          {location.pathname === "/settings" && "Tu skonfigurujesz swój profil."}
+          {isTeacher
+            ? "Zarządzaj klasą, użytkownikami i materiałami."
+            : "Zobacz swoje lekcje, testy i ogłoszenia."}
         </p>
-      </div>
+      </main>
     </div>
   );
-}
+};
+
+export default Dashboard;
