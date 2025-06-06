@@ -97,7 +97,7 @@ app.post("/users", async (req, res) => {
     const hashedPassword = await bcrypt.hash(haslo, 10);
 
     // 🧠 Rola zdefiniowana na podstawie emaila
-    const rola = email === "Staniszewski.jakub03@gmail.com" ? "teacher" : "student";
+    const rola = email === "staniszewski.jakub03@gmail.com" ? "teacher" : "student";
 
     const result = await pool.query(
       `INSERT INTO users (imie, nazwisko, email, haslo, rola)
