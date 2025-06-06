@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AuthPage from '../pages/AuthPage';
-import { DashboardPage } from '../pages/Dashboard';
+import DashboardPage from '../pages/Dashboard';
+
 import ProtectedRoute from './ProtectedRoute';
 
 const AppRouter = () => {

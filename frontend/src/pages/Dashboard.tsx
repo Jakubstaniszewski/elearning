@@ -5,7 +5,7 @@ import { StudentSidebar } from "../components/UI/StudentSidebar";
 import { cn } from "../utils/cn";
 import { useLocation } from "react-router-dom";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [open, setOpen] = useState(true);
   const location = useLocation();
 
@@ -32,4 +32,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;
