@@ -20,6 +20,43 @@ const pool = new Pool({
   },
 });
 
+app.post("/login", async (req, res) => {
+  const { email, haslo } = req.body;
+
+  if (!email || !haslo) {
+    return res.status(400).send("Email i hasło są wymagane.");
+  }
+
+  try {
+    const result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(400).send("Nieprawidłowy email lub hasło.");
+    }
+
+    const isMatch = await bcrypt.compare(haslo, user.haslo);
+    if (!isMatch) {
+      return res.status(400).send("Nieprawidłowy email lub hasło.");
+    }
+
+    // Możesz dodać token JWT tutaj w przyszłości
+
+    res.status(200).json({
+      message: "Zalogowano pomyślnie",
+      user: {
+        id: user.id,
+        imie: user.imie,
+        nazwisko: user.nazwisko,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Błąd serwera.");
+  }
+});
+
 app.get("/", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.send(`Backend działa! ${result.rows[0].now}`);
