@@ -24,6 +24,26 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/init-users-table", async (req, res) => {
+  try {
+    const query = `
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        imie VARCHAR(100),
+        nazwisko VARCHAR(100),
+        email VARCHAR(150) UNIQUE NOT NULL,
+        haslo TEXT NOT NULL
+      );
+    `;
+    await pool.query(query);
+    res.send("Tabela 'users' została utworzona.");
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Błąd przy tworzeniu tabeli.");
+  }
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
