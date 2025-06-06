@@ -1,35 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getUserRole } from "../utils/auth";
 import { Sidebar } from "../components/UI/Sidebar";
 import { TeacherSidebar } from "../components/UI/TeacherSidebar";
 import { StudentSidebar } from "../components/UI/StudentSidebar";
-import { cn } from "../utils/cn";
-import { useLocation } from "react-router-dom";
 
-const DashboardPage = () => {
-  const [open, setOpen] = useState(true);
-  const location = useLocation();
+const Dashboard = () => {
+  const [role, setRole] = useState<"teacher" | "student">("student");
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
-  const isTeacher = user.email === "Staniszewski.jakub03@gmail.com";
+  useEffect(() => {
+    const role = getUserRole();
+    setRole(role);
+  }, []);
 
   return (
-    <div className={cn("w-screen h-screen flex")}>
-      <Sidebar open={open} setOpen={setOpen}>
-        {isTeacher ? <TeacherSidebar open={open} /> : <StudentSidebar open={open} />}
+    <div className="w-screen h-screen flex">
+      <Sidebar open={true} setOpen={() => {}}>
+        {role === "teacher" ? (
+          <TeacherSidebar open={true} />
+        ) : (
+          <StudentSidebar open={true} />
+        )}
       </Sidebar>
 
       <main className="flex-1 p-6 overflow-y-auto">
         <h1 className="text-2xl font-bold text-neutral-800 dark:text-white mb-4">
-          {isTeacher ? "Witaj, nauczycielu" : "Witaj, uczniu"}
+          {role === "teacher" ? "Panel nauczyciela" : "Panel ucznia"}
         </h1>
         <p className="text-neutral-600 dark:text-neutral-300">
-          {isTeacher
-            ? "Zarządzaj klasą, użytkownikami i materiałami."
-            : "Zobacz swoje lekcje, testy i ogłoszenia."}
+          {role === "teacher"
+            ? "Zarządzaj użytkownikami i materiałami."
+            : "Twoje zadania, lekcje i testy będą tutaj."}
         </p>
       </main>
     </div>
   );
 };
 
-export default DashboardPage;
+export default Dashboard;
