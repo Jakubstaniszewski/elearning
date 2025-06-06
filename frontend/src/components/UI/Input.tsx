@@ -1,21 +1,14 @@
-type Props = {
-  label: string;
-  id: string;
-  type?: string;
-};
+import { InputHTMLAttributes } from 'react';
+import { cn } from '../../utils/cn'; // lub '../utils/cn' jeśli alias nie działa
 
-const Input = ({ label, id, type = 'text' }: Props) => (
-  <div>
-    <label htmlFor={id} className="block text-sm font-medium text-gray-300">
-      {label}
-    </label>
+export const Input = ({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) => {
+  return (
     <input
-      id={id}
-      type={type}
-      required
-      className="mt-1 w-full px-4 py-2 bg-[#1f2937] text-white rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-400"
+      className={cn(
+        'px-3 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-zinc-900 text-sm text-neutral-900 dark:text-white placeholder:text-neutral-400 dark:placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-600',
+        className
+      )}
+      {...props}
     />
-  </div>
-);
-
-export default Input;
+  );
+};
